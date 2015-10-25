@@ -11,6 +11,7 @@ import (
     "math/rand"
     "strconv"
     "strings"
+    "time"
 )
 
 type User struct{
@@ -47,16 +48,6 @@ type UpdateLocationRequest struct{
 	Zip string
 }
 
-type AddLocationResponse struct{
-	UserId int
-	Name string
-	Address string
-	City string
-	State string
-	Zip string
-	Coordinates Location
-}
-
 func getCoordinates(a *Address){
 	addressString := strings.Replace(a.Address+"+"+a.City+"+"+a.State+"+"+a.Zip, " ", "%20", -1)
    	resp, err := http.Get("http://maps.google.com/maps/api/geocode/json?address="+addressString+"&sensor=false")
@@ -80,6 +71,11 @@ func getCoordinates(a *Address){
 	}
 }
 
+func random(min, max int) int {
+    rand.Seed(time.Now().Unix())
+    return rand.Intn(max - min) + min
+}
+
 func createLocation(rw http.ResponseWriter, req *http.Request, p httprouter.Params) {
 		addLocationRequest := new(AddLocationRequest)
 		decoder := json.NewDecoder(req.Body)
@@ -93,7 +89,7 @@ func createLocation(rw http.ResponseWriter, req *http.Request, p httprouter.Para
 		location := Location{}
 		address := Address{addLocationRequest.Address,addLocationRequest.City,addLocationRequest.State,addLocationRequest.Zip,location}
 		user := User{0,addLocationRequest.Name,address}
-		user.UserId = rand.Intn(1000)
+		user.UserId = random(1, 100)
 		getCoordinates(&user.UserAddress)
 		session, err := mgo.Dial("mongodb://sejal:1234@ds045064.mongolab.com:45064/planner")
 		if err != nil {
@@ -132,7 +128,8 @@ func getLocation(rw http.ResponseWriter, req *http.Request, p httprouter.Params)
     result := User{}
     err = c.Find(bson.M{"userid":locationId}).One(&result)
     if err != nil {
-            log.Fatal(err)
+            fmt.Fprint(rw, "Data not found")
+            return
     }
     outgoingJSON, err := json.Marshal(result)
 	if err != nil {
