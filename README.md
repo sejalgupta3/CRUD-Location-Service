@@ -1,4 +1,3 @@
-# cmpe273-assignment2
 CRUD Location Service
 ======
 The location service has the following REST endpoints to store and retrieve locations.
@@ -7,7 +6,8 @@ For lookup coordinates of a location, Google Map Api has been used.
 Example:
 Get coordinates of 1600 Amphitheatre Parkway, Mountain View, CA.
 http://maps.google.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=false
-1. Create New Location - POST        /locations
+
+* Create New Location - POST        /locations
 ```
 Request
 {
@@ -34,7 +34,7 @@ Response
 }
 
 ```
-2. Get a Location - GET        /locations/{location_id}
+* Get a Location - GET        /locations/{location_id}
 ```
 Request:
 GET /locations/12345
@@ -55,7 +55,7 @@ Response:
 }
 
 ```
-3. Update a Location - PUT /locations/{location_id}
+* Update a Location - PUT /locations/{location_id}
 ```
 Request:
 {
@@ -80,7 +80,7 @@ Response:
    }
 }
 ```
-4. Delete a Location - DELETE /locations/{location_id}
+* Delete a Location - DELETE /locations/{location_id}
 ```
 Request:
 DELETE  /locations/12345
